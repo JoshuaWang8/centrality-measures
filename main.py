@@ -3,6 +3,8 @@ A project implementing PageRank and Betweenness Centrality measures for social n
 """
 
 import networkx as nx
+from  pagerank_centrality import *
+
 
 def read_graph_data(edge_list):
     """
@@ -32,6 +34,9 @@ def read_graph_data(edge_list):
 
     return graph
 
+
 if __name__ == "__main__":
     graph = read_graph_data('data.txt')
 
+    pagerank_vector = find_pagerank_centralities(graph)
+    print(find_top_pagerank_nodes(pagerank_vector, 10))
