@@ -25,8 +25,15 @@ def find_pagerank_centralities(graph):
     # Build inverse degree matrix
     D_inv = np.diag([1 / len(graph[i]) for i in graph.nodes])
     
-    # Perform PageRank calculation
-    pagerank_vector = beta * np.matmul(np.linalg.inv(np.matmul(np.identity(len(graph.nodes())) - alpha * A.T, D_inv)), np.ones(len(graph.nodes())))
+    prev_pagerank_vector = np.zeros(len(graph.nodes()))
+    pagerank_vector = np.ones(len(graph.nodes())) / len(graph.nodes())
+
+    while np.sum(np.abs(prev_pagerank_vector - pagerank_vector)) > 0.0001:
+        prev_pagerank_vector = pagerank_vector.copy()
+
+        # Perform PageRank calculation
+        pagerank_vector = np.matmul(np.matmul(alpha * A.T, D_inv), pagerank_vector) + beta * np.ones(len(graph.nodes()))
+        pagerank_vector = pagerank_vector / np.sum(np.abs(pagerank_vector))
 
     return pagerank_vector
 
