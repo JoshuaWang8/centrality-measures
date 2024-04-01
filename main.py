@@ -43,8 +43,9 @@ def top_results_file(top_betweenness, top_pagerank, file_name='top_results.txt')
     centrality and the second line in the file will be the top nodes found using ppagerank.
 
     Parameters:
-        top_betweenness:
-        top_pagerank:
+        top_betweenness: List of top nodes found by betweenness centrality.
+        top_pagerank: List of top nodes found by pagerank centrality.
+        file_name: Name of results file.
     """
     file = open(file_name, "w")
 
