@@ -65,3 +65,21 @@ def find_betweenness_centrality(graph):
                 centralities[w] += delta[w]
     
     return centralities
+
+
+def find_top_betweenness_nodes(betweenness_centralities, num):
+    """
+    Finds the nodes with the greatest betweenness centralities.
+
+    Parameters:
+        betweenness_centralities: Dictionary containing the corresponding betweenness centralities
+            for each node in the graph.
+        num: Number of top nodes to find.
+
+    Returns:
+        Nodes with the greatest betweenness centralities.
+    """
+    sorted_nodes = sorted(betweenness_centralities.items(), key = lambda x: x[1], reverse=True)
+    top_nodes = [node for node, _ in sorted_nodes[:num]]
+
+    return top_nodes
