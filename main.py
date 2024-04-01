@@ -64,6 +64,41 @@ def top_results_file(top_betweenness, top_pagerank, file_name='top_results.txt')
     file.close()
 
 
+def full_results_file(top_betweenness, top_pagerank, file_name='full_results.csv'):
+    """
+    Writes all nodes and a corresponding label to a file. The possible labels are:
+        - 0: If a node is not considered a top node by either betweenness nor pagerank
+        - 1: If a node is considered a top node by only betweenness centrality
+        - 2: If a node is considered a top node by only pagerank
+        - 3: If a node is considered a top node by both betweenness centrality and pagerank
+    The file will have one row for each node, with the format: [node_id],[label].
+
+    Parameters:
+        top_betweenness: List of top nodes found by betweenness centrality.
+        top_pagerank: List of top nodes found by pagerank centrality.
+        file_name: Name of results file.
+    """
+    file = open(file_name, "w")
+
+    file.write("id,label\n")
+
+    for i in range(4039):
+        label = 0
+        if (i in top_betweenness) and (i in top_pagerank):
+            label = 3
+        elif (i in top_betweenness):
+            label = 1
+        elif (i in top_pagerank):
+            label = 2
+
+        file.write(str(i) + "," + str(label))
+
+        if i != 4038:
+            file.write("\n")
+
+    file.close()
+
+
 if __name__ == "__main__":
     graph = read_graph_data('data.txt')
 
@@ -74,3 +109,4 @@ if __name__ == "__main__":
     top_betweenness = find_top_betweenness_nodes(betweenness_centralities, 10)
 
     top_results_file(top_betweenness, top_pagerank)
+    full_results_file(top_betweenness, top_pagerank)
