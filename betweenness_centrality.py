@@ -15,9 +15,10 @@ def breadth_first_search(graph, start):
         paths: Number of available shortest paths from start node.
         predecessors: Predecessors of each node that will be passed through during the shortest path.
     """
-    paths = {v: 0 for v in graph.nodes()}
-    predecessors = {v: [] for v in graph.nodes()}
-    distances = {v: None for v in graph.nodes()}
+    paths = {node: 0 for node in graph.nodes()}
+    paths[start] = 1
+    predecessors = {node: [] for node in graph.nodes()}
+    distances = {node: None for node in graph.nodes()}
     distances[start] = 0
 
     queue = [start]
@@ -40,6 +41,27 @@ def breadth_first_search(graph, start):
 def find_betweenness_centrality(graph):
     """
     Calculates the node betweenness centrality for all nodes in a graph.
+
+    Parameters:
+        graph: NetworkX graph object for which betweenness centrality will be calculated for.
+
+    Returns:
+        centralities: Betweenness centrality measures for all nodes.
     """
 
-    pass
+    centralities = {node: 0 for node in graph.nodes()}
+
+    for node in graph.nodes():
+        stack = []
+        sigma, pred = breadth_first_search(graph, node)
+        delta = {node: 0 for node in graph.nodes()}
+        stack.extend(graph.nodes())
+
+        while stack:
+            w = stack.pop()
+            for v in pred[w]:
+                delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w])
+            if w != node:
+                centralities[w] += delta[w]
+    
+    return centralities
