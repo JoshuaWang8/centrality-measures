@@ -40,7 +40,7 @@ def bfs(graph, start):
     return visited_nodes, paths, path_counts
 
 
-def find_betweenness_centrality(graph):
+def find_betweenness(graph):
     """
     Calculates the node betweenness centrality for all nodes in a graph.
 
@@ -71,7 +71,7 @@ def find_betweenness_centrality(graph):
     return centralities
 
 
-def find_top_betweenness_nodes(betweenness_centralities, num):
+def top_betweenness(betweenness_centralities, num):
     """
     Finds the nodes with the greatest betweenness centralities.
 
