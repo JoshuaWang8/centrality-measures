@@ -3,7 +3,7 @@ Code for calculating Betweenness Centrality for social network nodes.
 """
 
 
-def breadth_first_search(graph, start):
+def bfs(graph, start):
     """
     Performs breadth first search given a graph and the starting node and finds the number of shortest paths and predecessors for each .
 
@@ -15,9 +15,10 @@ def breadth_first_search(graph, start):
         paths: Number of available shortest paths from start node.
         predecessors: Predecessors of each node that will be passed through during the shortest path.
     """
-    paths = {node: 0 for node in graph.nodes()}
-    paths[start] = 1
-    predecessors = {node: [] for node in graph.nodes()}
+    visited_nodes = []
+    paths = {node: [] for node in graph.nodes()}
+    path_counts = {node: 0  for node in graph.nodes()}
+    path_counts[start] = 1
     distances = {node: None for node in graph.nodes()}
     distances[start] = 0
 
@@ -25,17 +26,18 @@ def breadth_first_search(graph, start):
 
     while len(queue) > 0:
         v = queue.pop(0)
+        visited_nodes.append(v)
 
         for w in graph.neighbors(v):
             if distances[w] == None:
-                queue.append(w)
                 distances[w] = distances[v] + 1
+                queue.append(w)
             
             if distances[w] == distances[v] + 1:
-                predecessors[w].append(v)
-                paths[w] += paths[v]
+                path_counts[w] += path_counts[v]
+                paths[w].append(v)
 
-    return paths, predecessors
+    return visited_nodes, paths, path_counts
 
 
 def find_betweenness_centrality(graph):
@@ -52,15 +54,17 @@ def find_betweenness_centrality(graph):
     centralities = {node: 0 for node in graph.nodes()}
 
     for node in graph.nodes():
-        stack = []
-        sigma, pred = breadth_first_search(graph, node)
-        delta = {node: 0 for node in graph.nodes()}
-        stack.extend(graph.nodes())
+        visited_nodes, paths, path_counts = bfs(graph, node)
 
-        while stack:
-            w = stack.pop()
-            for v in pred[w]:
-                delta[v] += (sigma[v] / sigma[w]) * (1 + delta[w])
+        # Accumulation
+        delta = {node: 0 for node in visited_nodes}
+
+        while len(visited_nodes) > 0:
+            w = visited_nodes.pop()
+
+            for v in paths[w]:
+                delta[v] += (path_counts[v] / path_counts[w]) * (1 + delta[w])
+
             if w != node:
                 centralities[w] += delta[w]
     
