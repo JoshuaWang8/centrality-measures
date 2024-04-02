@@ -4,7 +4,7 @@ A project implementing PageRank and Betweenness Centrality measures for social n
 
 import networkx as nx
 from pagerank_centrality import *
-from betweenness_centrality import find_betweenness_centrality, find_top_betweenness_nodes
+from betweenness_centrality import find_betweenness, top_betweenness
 
 
 def read_graph_data(edge_list):
@@ -80,7 +80,7 @@ def full_results_file(top_betweenness, top_pagerank, file_name='full_results.csv
     """
     file = open(file_name, "w")
 
-    file.write("id,label\n")
+    file.write("Id,Label\n")
 
     for i in range(4039):
         label = 0
@@ -102,11 +102,11 @@ def full_results_file(top_betweenness, top_pagerank, file_name='full_results.csv
 if __name__ == "__main__":
     graph = read_graph_data('data.txt')
 
-    pagerank_vector = find_pagerank_centralities(graph)
-    top_pagerank = find_top_pagerank_nodes(pagerank_vector, 10)
+    betweenness_centralities = find_betweenness(graph)
+    top_10_betweenness = top_betweenness(betweenness_centralities, 10)
 
-    betweenness_centralities = find_betweenness_centrality(graph)
-    top_betweenness = find_top_betweenness_nodes(betweenness_centralities, 10)
+    pagerank_vector = find_pagerank(graph)
+    top_10_pagerank = top_pagerank(pagerank_vector, 10)
 
-    top_results_file(top_betweenness, top_pagerank)
-    full_results_file(top_betweenness, top_pagerank)
+    top_results_file(top_10_betweenness, top_10_pagerank)
+    full_results_file(top_10_betweenness, top_10_pagerank)
