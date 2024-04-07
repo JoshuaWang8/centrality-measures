@@ -100,7 +100,7 @@ def full_results_file(top_betweenness, top_pagerank, file_name='full_results.csv
     file.close()
 
 
-def draw_graph(graph, highlighted_nodes=None):
+def draw_graph(graph, highlighted_nodes=None, save_name='graph'):
     """
     Draws the graph as an image. If a list of nodes to highlight is included, these nodes
     will be drawn in red and after all other nodes so that they are not overlapped.
@@ -109,33 +109,35 @@ def draw_graph(graph, highlighted_nodes=None):
         graph: NetworkX graph object to draw.
         highlighted_nodes: List of node IDs to highlight.
     """
+    np.random.seed(8)
     pos = nx.spring_layout(graph)
-    plt.figure(figsize=(18, 15))
-    nx.draw_networkx_edges(graph, pos, width=0.5)
+    plt.figure(figsize=(12, 9))
+    nx.draw_networkx_edges(graph, pos, width=0.2)
 
     if highlighted_nodes == None:
         nx.draw_networkx_nodes(graph, pos)
     else:
         nx.draw_networkx_nodes(graph, pos, [node for node in graph.nodes() if node not in highlighted_nodes], node_size=10)
-        nx.draw_networkx_nodes(graph, pos, [node for node in graph.nodes() if node in highlighted_nodes], node_size=10, node_color='red')
+        nx.draw_networkx_nodes(graph, pos, [node for node in graph.nodes() if node in highlighted_nodes], node_size=20, node_color='red')
 
         node_labels = {node: node for node in highlighted_nodes}
-        nx.draw_networkx_labels(graph, pos, labels=node_labels, font_color='red', horizontalalignment='right', verticalalignment='top')
+        nx.draw_networkx_labels(graph, pos, labels=node_labels, font_color='red', font_size=16, horizontalalignment='right', verticalalignment='top')
 
-    # plt.savefig("Graph.png", format="PNG")
-    plt.show()
+    plt.savefig(save_name + '.png', format='PNG')
+    # plt.show()
 
 
 if __name__ == "__main__":
     graph = read_graph_data('data.txt')
-
-    draw_graph(graph, [107, 1684, 3437, 1912, 1085, 0, 698, 567, 58, 428])
 
     betweenness_centralities = find_betweenness(graph)
     top_10_betweenness = top_betweenness(betweenness_centralities, 10)
 
     pagerank_vector = find_pagerank(graph)
     top_10_pagerank = top_pagerank(pagerank_vector, 10)
+
+    draw_graph(graph, top_10_betweenness, 'betweenness_top_nodes')
+    draw_graph(graph, top_10_pagerank.tolist(), 'pagerank_top_nodes')
 
     top_results_file(top_10_betweenness, top_10_pagerank)
     full_results_file(top_10_betweenness, top_10_pagerank)
